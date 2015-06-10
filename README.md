@@ -5,7 +5,6 @@ This tutorial explains how to install the [Jenkins CI server](http://jenkins-ci.
 If you develop applications with PHP (the PHP Hypertext Preprocessor), you may already have read or heard that many projects nowadays choose agile methods for quick progress. This includes test-driven development (TDD), behavior-driven development (BDD), collaboriational platforms for version control like GitHub, and finally, [Continuous Integration (CI)](http://en.wikipedia.org/wiki/Continuous_integration) comes into play. CI is basically automating what a lead developer would do in a hierarchically structured company: Analyze code that the involved team members of a project have written, run tests, make sure things work, and on success, merge the changes, new features or fixes into the main repository, or notify the committer otherwise.
 
 # Tutorial: Install a Jenkins CI server on FreeBSD
-
 ## Prerequisites and preparation
 If you set up a [FreeBSD droplet on DigitalOcean](https://www.digitalocean.com/company/blog/presenting-freebsd-how-we-made-it-happen/), simply [connect to your droplet via SSH](https://www.digitalocean.com/community/tutorials/how-to-get-started-with-freebsd-10-1) and run `sudo su` once first since almost all the following commands will require root access. Otherwise, just connect to your target machine via SSH or do whatever you prefer to have a shell and the necessary access rights.
 
@@ -22,7 +21,6 @@ The editor `nano` can be installed to edit files mentioned below. This is option
 ```
 
 ## Installation
-
 ### Basic tools
 To build Jenkins later, we will need the current snapshot of FreeBSD's ports tree which is versioned through SVN (subversion).
 
@@ -43,7 +41,6 @@ Jenkins is written in Java. Thus, first install the Java Development Kit (JDK):
 ```
     pkg install openjdk8
 ```
-
 Then install Jenkins from the port:
 ```
     cd /usr/ports/devel/jenkins
@@ -127,12 +124,19 @@ To start the service now:
 ```
 
 You can then access Jenkins' web interface on `http://your-droplet:8180/jenkins/` and begin configuring it. The first start will take a few minutes.
+
 ![Jenkins first start](img/jenkins-first-start.png?raw=true)
 
-You will then be presented with the overview page. Look a bit further down to see hints on configuration.
-![Jenkins managent](img/jenkins-manage.png?raw=true)
+You will then be presented with the overview page.
 
-Attention: Set up access controls first since this instance is now exposed and anyone may try to access it.
+![Jenkins overview](img/jenkins-overview.png?raw=true)
+
+Click on "Manage Jenkins" and look a bit further down to see hints on configuration.
+
+![Jenkins management](img/jenkins-manage.png?raw=true)
+
+**Attention**: Set up access controls first since this instance is now exposed and anyone may try to access it.
+
 ![Jenkins security setup](img/jenkins-security.png?raw=true)
 
 A quick way to set it up is the following:
@@ -146,12 +150,15 @@ A quick way to set it up is the following:
 - Uncheck "Allow users to sign up"
 
 Now if you login again with your newly created user, you will be presented the overview page again.
-![Jenkins overview](img/jenkins-overview.png?raw=true)
+
+![Jenkins overview](img/jenkins-overview-2.png?raw=true)
 
 Before installing the plugins you need to build your project, update all the plugins that are currently installed.
+
 ![Jenkins plugins](img/jenkins-plugins.png)
 
 This will take some time again because the new versions have to be downloaded first and then applied.
+
 ![Jenkins plugins upgrade](img/jenkins-plugins-upgrade.png)
 
 Finally, restart Jenkins:
@@ -159,12 +166,31 @@ Finally, restart Jenkins:
     service jenkins restart
 ```
 
-To enable support for the various tools we have just installed, install the respective plugins through the web interface as well. Click on the "Available" tab and use the search field to find them quickly, since Jenkins offers a huge list of plugins. You will at least need:
+To enable support for the various tools we have just installed, install the respective plugins through the web interface as well. Navigate to the "Manage Plugins" page again, click on the "Available" tab and use the search field to find them quickly, since Jenkins offers a huge list of plugins. You will at least need:
 - php
 - Git plugin
 If you there is anything else you find interesting, feel free to install it as well.
+
 ![Jenkins plugins installation](img/jenkins-plugins-installation.png)
 
+## Upgrading
+If updates are available, Jenkins will notify you.
+
+![Jenkins updates available](img/jenkins-updates-available.png)
+
+To upgrade Jenkins itself, do so from the ports tree. Connect to your FreeBSD machine, get root access and update your ports tree:
+```
+    portsnap fetch update
+```
+Then build and reinstall Jenkins:
+```
+    cd /usr/ports/devel/jenkins
+    make reinstall clean BATCH=yes
+```
+And restart the service:
+```
+    service jenkins restart
+```
 
 ## Finish
 That's it, you now have a basic installation of Jenkins for PHP and JS development. Plese refer to [the documentation](https://wiki.jenkins-ci.org/display/JENKINS/Home) for more details and set up your first project. Good luck and happy building!
